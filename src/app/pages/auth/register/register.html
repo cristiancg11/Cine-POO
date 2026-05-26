@@ -1,0 +1,47 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+      <h2>Crea tu cuenta</h2>
+      
+      @if (errorMessage) {
+          <div class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+          </div>
+      }
+      
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+          <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="nombre" name="nombre"
+                     [(ngModel)]="userData.nombre" placeholder="Juan Perez" required>
+              <label for="nombre">Nombre completo</label>
+          </div>
+
+          <div class="form-floating mb-3">
+              <input type="email" class="form-control" id="email" name="email"
+                     [(ngModel)]="userData.email" placeholder="name@example.com" required>
+              <label for="email">Correo electrónico</label>
+          </div>
+          
+          <div class="form-floating mb-4">
+              <input type="password" class="form-control" id="password" name="password"
+                     [(ngModel)]="userData.password" placeholder="Contraseña" required>
+              <label for="password">Añade una contraseña</label>
+          </div>
+          
+          <button type="submit" class="btn btn-primary-custom w-100 py-3 fs-5 mb-4" [disabled]="!registerForm.form.valid || isLoading">
+              @if (isLoading) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Procesando...
+              } @else {
+                  Comenzar ahora
+              }
+          </button>
+      </form>
+
+      <div class="auth-links">
+          <p class="mb-2 text-muted">¿Ya tienes una cuenta? <a routerLink="/login" class="text-white fw-bold ms-1">Inicia sesión.</a></p>
+          <p class="small text-muted mt-4" style="font-size: 0.8rem;">
+              Al registrarte, aceptas nuestros <a href="#" class="text-primary">Términos de uso</a> y <a href="#" class="text-primary">Políticas de privacidad</a>.
+          </p>
+      </div>
+  </div>
+</div>

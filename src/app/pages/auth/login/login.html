@@ -1,0 +1,51 @@
+<div class="auth-wrapper">
+  <div class="auth-card">
+      <h2>Iniciar Sesión</h2>
+      
+      @if (errorMessage) {
+          <div class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+          </div>
+      }
+      
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+          <div class="form-floating mb-3">
+              <input type="text" class="form-control" id="email" name="email"
+                     [(ngModel)]="credentials.email" placeholder="Correo electrónico o usuario" required>
+              <label for="email">Correo electrónico o usuario</label>
+          </div>
+          
+          <div class="form-floating mb-4">
+              <input type="password" class="form-control" id="password" name="password"
+                     [(ngModel)]="credentials.password" placeholder="Contraseña" required>
+              <label for="password">Contraseña</label>
+          </div>
+          
+          <button type="submit" class="btn btn-primary-custom w-100 py-3 fs-5 mb-4" [disabled]="!loginForm.form.valid || isLoading">
+              @if (isLoading) {
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Iniciando...
+              } @else {
+                  Iniciar Sesión
+              }
+          </button>
+          
+          <div class="d-flex justify-content-between align-items-center text-muted small mb-4">
+              <div class="form-check">
+                  <input class="form-check-input bg-transparent border-secondary" type="checkbox" value="" id="rememberMe">
+                  <label class="form-check-label" for="rememberMe">
+                      Recuérdame
+                  </label>
+              </div>
+              <a href="#">¿Olvidaste tu contraseña?</a>
+          </div>
+      </form>
+
+      <div class="auth-links">
+          <p class="mb-2 text-muted">¿Primera vez en CinePOO? <a routerLink="/register" class="text-white fw-bold ms-1">Suscríbete ahora.</a></p>
+          <p class="small text-muted mt-4" style="font-size: 0.8rem;">
+              Esta página está protegida por Google reCAPTCHA para comprobar que no eres un robot. 
+          </p>
+      </div>
+  </div>
+</div>

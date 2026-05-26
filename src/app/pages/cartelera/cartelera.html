@@ -1,0 +1,51 @@
+<section id="cartelera" class="movie-section min-vh-100">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">En Cartelera</h2>
+    <button (click)="cargarPeliculas()" class="btn btn-outline-custom btn-sm">
+      <i class="bi bi-arrow-clockwise"></i> Actualizar
+    </button>
+  </div>
+  
+  @if (isLoading) {
+      <div class="text-center mt-5">
+          <div class="spinner-border text-primary-custom" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Cargando cartelera...</span>
+          </div>
+      </div>
+  } @else {
+      <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4 mt-2">
+          @for (p of peliculas; track p.id) {
+              <div class="col" style="cursor:pointer;">
+                  <div class="card movie-card h-100 shadow-sm border-0">
+                      <div class="movie-poster-wrapper" style="overflow: hidden;">
+                          <img [src]="p.imagenUrl || p.imagen" class="movie-poster" [alt]="p.titulo">
+                          <div class="movie-overlay d-flex flex-column align-items-center justify-content-center bg-black bg-opacity-50">
+                              @if (p.estadoCartelera === 'PROXIMAMENTE') {
+                                <div class="badge bg-warning text-dark mb-2 px-3 py-2 fw-bold">PRÓXIMAMENTE</div>
+                                <button class="btn btn-secondary btn-sm fw-bold px-3 w-75" disabled>No Disponible</button>
+                              } @else {
+                                <button (click)="comprarBoleto(p, 'NORMAL'); $event.stopPropagation()" class="btn btn-primary-custom btn-sm fw-bold px-3 mb-2 w-75">Comprar Normal</button>
+                                <button (click)="comprarBoleto(p, 'VIP'); $event.stopPropagation()" class="btn btn-warning btn-sm fw-bold px-3 w-75">Comprar VIP</button>
+                              }
+                          </div>
+                      </div>
+                      <div class="movie-info text-white">
+                          <h5 class="movie-title text-truncate">{{ p.titulo }}</h5>
+                          <div class="movie-meta mb-2">
+                              <span class="movie-badge bg-secondary text-light border-0">{{ p.clasificacion }}</span>
+                          </div>
+                          <p class="small text-muted mb-0 d-flex justify-content-between">
+                              <span><i class="bi bi-film"></i> {{ p.genero }}</span>
+                              <span><i class="bi bi-clock"></i> {{ p.duracion }}m</span>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+          } @empty {
+              <div class="col-12">
+                  <p class="text-muted">No hay películas en cartelera actualmente.</p>
+              </div>
+          }
+      </div>
+  }
+</section>

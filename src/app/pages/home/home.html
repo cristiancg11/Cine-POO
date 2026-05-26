@@ -1,0 +1,92 @@
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="badge bg-primary text-white mb-3 px-3 py-2 fw-bold rounded-pill shadow-sm">
+      <i class="bi bi-stars"></i> LO NUEVO EN CARTELERA
+    </span>
+    <h1 class="display-3 fw-800 text-warning mb-3" style="text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">
+      Tus películas favoritas <br> <span class="text-white">al mejor precio</span>
+    </h1>
+    <p class="fs-5 text-light mb-4" style="max-width: 600px; text-shadow: 1px 1px 4px rgba(0,0,0,0.8);">
+      Consulta horarios, precios actualizados y reserva tus boletos en los mejores cines. 
+      Vive la experiencia premium de <strong>CineMaster</strong> con la tecnología más avanzada.
+    </p>
+    <div class="d-flex gap-3 flex-wrap">
+      <a routerLink="/cartelera" class="btn btn-primary-custom btn-lg px-5 py-3 fs-5 shadow-lg">
+        <i class="bi bi-ticket-perforated me-2 fs-4"></i>Comprar Boletos
+      </a>
+      <a routerLink="/estrenos" class="btn btn-outline-light btn-lg px-4 py-3 fs-5">
+        <i class="bi bi-film me-2"></i>Ver Estrenos
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Tarjetas de películas -->
+<section class="movie-section">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-fire text-warning"></i> Tendencias y Novedades</h2>
+    <a routerLink="/cartelera" class="text-warning text-decoration-none fw-bold">Ver todo <i class="bi bi-arrow-right"></i></a>
+  </div>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4 mt-1">
+    @for (p of peliculas; track p.titulo) {
+      <div class="col">
+        <div class="card movie-card h-100">
+          <div class="movie-poster-wrapper">
+              <img [src]="p.imagenUrl || p.imagen" class="movie-poster" [alt]="p.titulo">
+              <div class="movie-overlay d-flex flex-column gap-2 align-items-center justify-content-center">
+                @if (p.estadoCartelera === 'PROXIMAMENTE') {
+                  <span class="badge bg-warning text-dark mb-1">Próximamente</span>
+                  <button class="btn btn-secondary btn-sm w-75" disabled>No Disponible</button>
+                } @else {
+                  <button (click)="comprarBoleto(p, 'NORMAL')" class="btn btn-primary-custom btn-sm w-75 fw-bold">Comprar Normal</button>
+                  <button (click)="comprarBoleto(p, 'VIP')" class="btn btn-warning btn-sm w-75 fw-bold text-dark">Comprar VIP</button>
+                }
+              </div>
+            </div>
+          <div class="movie-info text-white">
+            <h5 class="movie-title">{{ p.titulo }}</h5>
+            <div class="movie-meta mb-2">
+              <span class="movie-badge">{{ p.clasificacion }}</span>
+              <span>{{ p.duracion }}m</span>
+            </div>
+            <p class="small text-muted mb-0 d-flex align-items-center gap-2">
+              <i class="bi bi-film"></i> {{ p.genero }}
+            </p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</section>
+
+<!-- Beneficios -->
+<section class="benefits-section">
+  <div class="row g-4 justify-content-center">
+    <div class="col-12 text-center mb-3">
+      <h2 class="movie-section" style="justify-content:center;">¿Por qué CineMaster?</h2>
+    </div>
+    <div class="col-md-4">
+      <div class="benefit-card">
+        <div class="benefit-icon"><i class="bi bi-ticket-perforated-fill"></i></div>
+        <h5 class="fw-700 mb-2">Reserva en segundos</h5>
+        <p class="text-muted small mb-0">Elige tu función, selecciona tu asiento y paga en un solo flujo sin complicaciones.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="benefit-card h-100 d-flex flex-column">
+        <div class="benefit-icon"><i class="bi bi-star-fill text-warning"></i></div>
+        <h5 class="fw-700 mb-2">Salas VIP disponibles</h5>
+        <p class="text-muted small mb-3 flex-grow-1">Disfruta de la experiencia premium con asientos de lujo y servicio personalizado.</p>
+        <a routerLink="/salas-vip" class="btn btn-outline-warning mt-auto align-self-start">Ver Salas VIP</a>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="benefit-card">
+        <div class="benefit-icon"><i class="bi bi-shield-check-fill"></i></div>
+        <h5 class="fw-700 mb-2">Pagos seguros</h5>
+        <p class="text-muted small mb-0">Tu información siempre protegida. Transacciones cifradas y reembolsos garantizados.</p>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,747 @@
+<div class="d-flex min-vh-100 bg-dark text-white pt-5">
+  <!-- Sidebar -->
+  <div class="d-flex flex-column flex-shrink-0 p-3 bg-dark border-end border-secondary" style="width: 280px; margin-top: 20px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+      <i class="bi bi-shield-lock fs-4 me-2 text-primary-custom"></i>
+      <span class="fs-4">Admin Panel</span>
+    </a>
+    <hr class="border-secondary">
+    <ul class="nav nav-pills flex-column mb-auto gap-2">
+      <li class="nav-item">
+        <button class="nav-link text-white w-100 text-start d-flex align-items-center gap-2" [class.active]="activeTab === 'resumen'" [class.bg-primary-custom]="activeTab === 'resumen'" (click)="setTab('resumen')">
+          <i class="bi bi-speedometer2"></i> Resumen
+        </button>
+      </li>
+      <li>
+        <button class="nav-link text-white w-100 text-start d-flex align-items-center gap-2" [class.active]="activeTab === 'peliculas'" [class.bg-primary-custom]="activeTab === 'peliculas'" (click)="setTab('peliculas')">
+          <i class="bi bi-film"></i> Películas
+        </button>
+      </li>
+      <li>
+        <button class="nav-link text-white w-100 text-start d-flex align-items-center gap-2" [class.active]="activeTab === 'funciones'" [class.bg-primary-custom]="activeTab === 'funciones'" (click)="setTab('funciones')">
+          <i class="bi bi-calendar-event"></i> Funciones
+        </button>
+      </li>
+      <li>
+        <button class="nav-link text-white w-100 text-start d-flex align-items-center gap-2" [class.active]="activeTab === 'salas'" [class.bg-primary-custom]="activeTab === 'salas'" (click)="setTab('salas')">
+          <i class="bi bi-camera-reels"></i> Salas
+        </button>
+      </li>
+      <li>
+        <button class="nav-link text-white w-100 text-start d-flex align-items-center gap-2" [class.active]="activeTab === 'reservas'" [class.bg-primary-custom]="activeTab === 'reservas'" (click)="setTab('reservas')">
+          <i class="bi bi-ticket-detailed"></i> Reservas
+        </button>
+      </li>
+      <li>
+        <button class="nav-link text-white w-100 text-start d-flex align-items-center gap-2" [class.active]="activeTab === 'usuarios'" [class.bg-primary-custom]="activeTab === 'usuarios'" (click)="setTab('usuarios')">
+          <i class="bi bi-people"></i> Usuarios
+        </button>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Contenido Principal -->
+  <div class="flex-grow-1 p-4" style="margin-top: 20px;">
+    
+    <!-- Resumen -->
+    @if (activeTab === 'resumen') {
+      <div class="container-fluid">
+        <h2 class="mb-4">Dashboard</h2>
+        
+        @if (isLoading) {
+          <div class="spinner-border text-primary-custom" role="status"></div>
+        } @else {
+          <div class="row g-4 mb-4">
+            <div class="col-md-12">
+              <div class="card bg-dark border-primary-custom border-opacity-50 shadow-lg">
+                <div class="card-body d-flex justify-content-between align-items-center py-4">
+                  <div>
+                    <h4 class="mb-1 text-primary-custom fw-bold">Acciones de Gestión</h4>
+                    <p class="text-muted small mb-0">Control total sobre películas, funciones y salas del sistema.</p>
+                  </div>
+                  <div class="d-flex gap-3">
+                    <button class="btn btn-primary-custom px-4 py-2 fw-bold" (click)="abrirPeliculaForm()">
+                      <i class="bi bi-plus-circle me-2"></i>Nueva Película
+                    </button>
+                    <button class="btn btn-outline-warning px-4 py-2 fw-bold" (click)="abrirFuncionForm()">
+                      <i class="bi bi-calendar-plus me-2"></i>Nueva Función
+                    </button>
+                    <button class="btn btn-outline-info px-4 py-2 fw-bold" (click)="abrirSalaForm()">
+                      <i class="bi bi-door-open me-2"></i>Nueva Sala
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-4 mb-4">
+            <div class="col-md-4">
+              <div class="card text-white bg-success bg-opacity-75 mb-3 h-100 border-0 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title text-uppercase small fw-bold"><i class="bi bi-people"></i> Usuarios Activos</h5>
+                  <p class="card-text display-6 fw-bold">{{ estadisticas.usuariosActivos }}</p>
+                  <div class="small text-white-50">Sincronizado con DB</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card text-white bg-warning bg-opacity-75 text-dark mb-3 h-100 border-0 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title text-uppercase small fw-bold"><i class="bi bi-ticket-detailed"></i> Reservas Activas</h5>
+                  <p class="card-text display-6 fw-bold">{{ estadisticas.reservasActivas }}</p>
+                  <div class="small text-dark-50">Total reservas no canceladas</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card text-white bg-info bg-opacity-75 text-dark mb-3 h-100 border-0 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title text-uppercase small fw-bold"><i class="bi bi-cash-coin"></i> Ganancias Reales</h5>
+                  <p class="card-text display-6 fw-bold">${{ estadisticas.gananciasTotales | number:'1.2-2' }}</p>
+                  <div class="small text-dark-50">Basado en pagos reales</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-md-6">
+              <div class="card bg-dark border-secondary h-100">
+                <div class="card-header border-secondary bg-secondary bg-opacity-10">
+                  <h5 class="mb-0 fw-bold text-primary-custom"><i class="bi bi-trophy me-2"></i>Películas más Reservadas</h5>
+                </div>
+                <div class="card-body p-0">
+                  <ul class="list-group list-group-flush list-group-dark">
+                    @for (p of estadisticas.peliculasTop; track p.titulo) {
+                      <li class="list-group-item bg-transparent text-white border-secondary d-flex justify-content-between align-items-center p-3">
+                        <span>{{ p.titulo }}</span>
+                        <span class="badge bg-primary-custom rounded-pill">{{ p.total }} reservas</span>
+                      </li>
+                    } @empty {
+                      <li class="list-group-item bg-transparent text-muted p-3">No hay datos suficientes</li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card bg-dark border-secondary h-100">
+                <div class="card-header border-secondary bg-secondary bg-opacity-10">
+                  <h5 class="mb-0 fw-bold text-warning"><i class="bi bi-lightning-charge me-2"></i>Funciones más Ocupadas</h5>
+                </div>
+                <div class="card-body p-0">
+                  <ul class="list-group list-group-flush list-group-dark">
+                    @for (f of estadisticas.funcionesOcupadas; track f.titulo + f.hora) {
+                      <li class="list-group-item bg-transparent text-white border-secondary p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <span class="fw-bold">{{ f.titulo }}</span>
+                          <span class="small text-info">{{ f.hora }}</span>
+                        </div>
+                        <div class="progress" style="height: 10px; background-color: #333;">
+                          <div class="progress-bar bg-warning" role="progressbar" [style.width]="f.ocupacion + '%'" [attr.aria-valuenow]="f.ocupacion" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="text-end small mt-1 text-muted">{{ f.ocupacion }}% ocupación</div>
+                      </li>
+                    } @empty {
+                      <li class="list-group-item bg-transparent text-muted p-3">No hay datos suficientes</li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Películas -->
+    @if (activeTab === 'peliculas') {
+      <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2 class="text-primary-custom fw-bold"><i class="bi bi-film me-2"></i>Gestión de Películas</h2>
+          <button class="btn btn-primary-custom px-4 fw-bold" (click)="abrirPeliculaForm()">
+            <i class="bi bi-plus-lg me-2"></i>Añadir Película
+          </button>
+        </div>
+        
+        <div class="card bg-dark border-secondary shadow-sm">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-dark table-hover mb-0 align-middle">
+                <thead class="bg-secondary bg-opacity-10">
+                  <tr>
+                    <th class="ps-4">ID</th>
+                    <th>Imagen</th>
+                    <th>Título</th>
+                    <th>Género</th>
+                    <th>Duración</th>
+                    <th>Estado</th>
+                    <th>Precio</th>
+                    <th class="text-end pe-4">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (p of peliculas; track p.id) {
+                    <tr class="border-secondary border-opacity-25">
+                      <td class="ps-4 text-muted">{{ p.id }}</td>
+                      <td>
+                        <div class="rounded-2 overflow-hidden" style="width: 40px; height: 55px; border: 1px solid #444;">
+                          <img [src]="p.imagenUrl || p.imagen || 'assets/img/no-poster.jpg'" alt="poster" class="w-100 h-100" style="object-fit: cover;">
+                        </div>
+                      </td>
+                      <td class="fw-bold text-white">{{ p.titulo }}</td>
+                      <td><span class="badge bg-secondary bg-opacity-50">{{ p.genero }}</span></td>
+                      <td>{{ p.duracion }}m</td>
+                      <td>
+                        <span class="badge" 
+                              [class.bg-success]="p.estadoCartelera === 'CARTELERA' || p.estadoCartelera === 'ESTRENO'"
+                              [class.bg-warning]="p.estadoCartelera === 'PROXIMAMENTE'"
+                              [class.bg-danger]="p.estadoCartelera === 'ARCHIVADA'">
+                          {{ p.estadoCartelera }}
+                        </span>
+                      </td>
+                      <td class="text-warning fw-bold">${{ p.precioBase | number:'1.0-0' }}</td>
+                      <td class="text-end pe-4">
+                        <div class="btn-group shadow-sm">
+                          <button class="btn btn-sm btn-outline-info px-3" (click)="abrirPeliculaForm(p)" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger px-3" (click)="eliminarPelicula(p.id)" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="8" class="text-center py-5 text-muted">
+                        <i class="bi bi-camera-reels fs-1 d-block mb-3 opacity-25"></i>
+                        No hay películas registradas en el sistema.
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Funciones -->
+    @if (activeTab === 'funciones') {
+      <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2 class="text-warning fw-bold"><i class="bi bi-calendar-event me-2"></i>Gestión de Funciones</h2>
+          <button class="btn btn-warning px-4 fw-bold text-dark" (click)="abrirFuncionForm()">
+            <i class="bi bi-plus-lg me-2"></i>Añadir Función
+          </button>
+        </div>
+        
+        <div class="card bg-dark border-secondary shadow-sm">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-dark table-hover mb-0 align-middle">
+                <thead class="bg-secondary bg-opacity-10">
+                  <tr>
+                    <th class="ps-4">ID</th>
+                    <th>Película</th>
+                    <th>Sala</th>
+                    <th>Fecha / Hora</th>
+                    <th>Formato / Idioma</th>
+                    <th>Precio Final</th>
+                    <th class="text-end pe-4">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (f of funciones; track f.id) {
+                    <tr class="border-secondary border-opacity-25">
+                      <td class="ps-4 text-muted">{{ f.id }}</td>
+                      <td class="fw-bold">{{ f.pelicula.titulo }}</td>
+                      <td><span class="badge bg-secondary">{{ f.sala.nombre }} ({{ f.sala.tipoSala }})</span></td>
+                      <td>
+                        <div class="fw-bold">{{ f.fecha }}</div>
+                        <div class="small text-info">{{ f.hora }}</div>
+                      </td>
+                      <td>{{ f.formato }} - {{ f.idioma }}</td>
+                      <td class="text-warning fw-bold">${{ f.precioFinal | number:'1.0-0' }}</td>
+                      <td class="text-end pe-4">
+                        <div class="btn-group shadow-sm">
+                          <button class="btn btn-sm btn-outline-warning px-3" (click)="abrirVerAsientos(f)" title="Ver Asientos">
+                            <i class="bi bi-grid-3x3"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-info px-3" (click)="abrirFuncionForm(f)" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger px-3" (click)="eliminarFuncion(f.id)" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="bi bi-calendar-x fs-1 d-block mb-3 opacity-25"></i>
+                        No hay funciones programadas.
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Salas -->
+    @if (activeTab === 'salas') {
+      <div class="container-fluid">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h2 class="text-info fw-bold"><i class="bi bi-camera-reels me-2"></i>Gestión de Salas</h2>
+          <button class="btn btn-info px-4 fw-bold text-dark" (click)="abrirSalaForm()">
+            <i class="bi bi-plus-lg me-2"></i>Añadir Sala
+          </button>
+        </div>
+        
+        <div class="card bg-dark border-secondary shadow-sm">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-dark table-hover mb-0 align-middle">
+                <thead class="bg-secondary bg-opacity-10">
+                  <tr>
+                    <th class="ps-4">ID</th>
+                    <th>Nombre de Sala</th>
+                    <th>Capacidad</th>
+                    <th>Tipo</th>
+                    <th>Estado</th>
+                    <th class="text-end pe-4">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (s of salas; track s.id) {
+                    <tr class="border-secondary border-opacity-25">
+                      <td class="ps-4 text-muted">{{ s.id }}</td>
+                      <td class="fw-bold">{{ s.nombre }}</td>
+                      <td>{{ s.capacidad }} asientos</td>
+                      <td>
+                        <span class="badge px-3 py-2" [class.bg-warning]="s.tipoSala === 'VIP'" [class.bg-primary]="s.tipoSala === 'NORMAL'" [class.bg-info]="s.tipoSala === 'IMAX' || s.tipoSala === '3D'">
+                          {{ s.tipoSala }}
+                        </span>
+                      </td>
+                      <td><span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-50 px-3 py-2">{{ s.estado }}</span></td>
+                      <td class="text-end pe-4">
+                        <div class="btn-group shadow-sm">
+                          <button class="btn btn-sm btn-outline-info px-3" (click)="abrirSalaForm(s)" title="Editar">
+                            <i class="bi bi-pencil"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger px-3" (click)="eliminarSala(s.id)" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="6" class="text-center py-5 text-muted">
+                        <i class="bi bi-door-closed fs-1 d-block mb-3 opacity-25"></i>
+                        No hay salas registradas.
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Reservas -->
+    @if (activeTab === 'reservas') {
+      <div class="container-fluid">
+        <h2 class="mb-4 text-primary-custom fw-bold"><i class="bi bi-ticket-detailed me-2"></i>Listado de Reservas</h2>
+        <div class="card bg-dark border-secondary shadow-sm">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-dark table-hover mb-0 align-middle">
+                <thead class="bg-secondary bg-opacity-10">
+                  <tr>
+                    <th class="ps-4">ID</th>
+                    <th>Cliente / Usuario</th>
+                    <th>Película</th>
+                    <th>Función / Sala</th>
+                    <th>Asientos</th>
+                    <th>Total Pagado</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (r of reservas; track r.id) {
+                    <tr class="border-secondary border-opacity-25">
+                      <td class="ps-4 text-muted">{{ r.id }}</td>
+                      <td>
+                        <div class="fw-bold text-white">{{ r.usuario.nombre }}</div>
+                        <div class="small text-muted">{{ r.usuario.email }}</div>
+                      </td>
+                      <td class="fw-bold">{{ r.funcion.pelicula.titulo }}</td>
+                      <td>
+                        <div class="small fw-bold">{{ r.funcion.fecha }}</div>
+                        <div class="small text-info">{{ r.funcion.hora }} — {{ r.funcion.sala.nombre }}</div>
+                      </td>
+                      <td>
+                        <div class="d-flex flex-wrap gap-1">
+                          @for (a of r.asientos; track a.id) {
+                            <span class="badge bg-secondary bg-opacity-50">{{ a.fila }}{{ a.numero }}</span>
+                          }
+                        </div>
+                      </td>
+                      <td class="text-warning fw-bold">${{ r.total | number:'1.0-0' }}</td>
+                      <td>
+                        <span class="badge px-3 py-2" 
+                              [class.bg-success]="r.estado === 'PAGADA'" 
+                              [class.bg-warning]="r.estado === 'RESERVADA'"
+                              [class.bg-danger]="r.estado === 'CANCELADA'">
+                          {{ r.estado }}
+                        </span>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="7" class="text-center py-5 text-muted">
+                        <i class="bi bi-ticket-perforated fs-1 d-block mb-3 opacity-25"></i>
+                        No se han encontrado reservas registradas.
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Usuarios -->
+    @if (activeTab === 'usuarios') {
+      <div class="container-fluid">
+        <h2 class="mb-4 text-info fw-bold"><i class="bi bi-people me-2"></i>Usuarios Registrados</h2>
+        
+        <div class="card bg-dark border-secondary shadow-sm">
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-dark table-hover mb-0 align-middle">
+                <thead class="bg-secondary bg-opacity-10">
+                  <tr>
+                    <th class="ps-4">ID</th>
+                    <th>Nombre Completo</th>
+                    <th>Correo Electrónico</th>
+                    <th>Rol en Sistema</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (u of usuarios; track u.id) {
+                    <tr class="border-secondary border-opacity-25">
+                      <td class="ps-4 text-muted">{{ u.id }}</td>
+                      <td class="fw-bold text-white">{{ u.nombre }}</td>
+                      <td>{{ u.email }}</td>
+                      <td>
+                        <span class="badge px-3 py-2" [ngClass]="u.rol === 'ROLE_ADMIN' ? 'bg-danger bg-opacity-25 text-danger border border-danger border-opacity-50' : 'bg-primary-custom bg-opacity-25 text-primary border border-primary border-opacity-50'">
+                          {{ u.rol }}
+                        </span>
+                      </td>
+                      <td><span class="badge bg-success bg-opacity-10 text-success">Activo</span></td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+
+  </div> <!-- Fin Contenido Principal -->
+
+  <!-- MODALES GLOBALES (Fuera de los tabs para evitar problemas de anidación) -->
+  
+  <!-- Modal Película -->
+  @if (showPeliculaForm) {
+    <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.7); z-index: 1060;">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-secondary shadow-lg">
+          <div class="modal-header border-secondary bg-secondary bg-opacity-10">
+            <h5 class="modal-title fw-bold text-primary-custom">
+              <i class="bi bi-film me-2"></i>{{ peliculaActual.id ? 'Editar Película' : 'Nueva Película' }}
+            </h5>
+            <button type="button" class="btn-close btn-close-white" (click)="cerrarPeliculaForm()"></button>
+          </div>
+          <div class="modal-body p-4">
+            <form (ngSubmit)="guardarPelicula()" #form="ngForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">TÍTULO</label>
+                  <input type="text" class="form-control bg-dark text-white border-secondary py-2" [(ngModel)]="peliculaActual.titulo" name="titulo" placeholder="Ej: Batman" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">GÉNERO</label>
+                  <input type="text" class="form-control bg-dark text-white border-secondary py-2" [(ngModel)]="peliculaActual.genero" name="genero" placeholder="Ej: Acción" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label text-muted small fw-bold">DURACIÓN (MIN)</label>
+                  <input type="number" class="form-control bg-dark text-white border-secondary py-2" [(ngModel)]="peliculaActual.duracion" name="duracion" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label text-muted small fw-bold">CLASIFICACIÓN</label>
+                  <input type="text" class="form-control bg-dark text-white border-secondary py-2" [(ngModel)]="peliculaActual.clasificacion" name="clasificacion" placeholder="Ej: +12" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label text-muted small fw-bold">PRECIO BASE ($)</label>
+                  <input type="number" class="form-control bg-dark text-white border-secondary py-2" [(ngModel)]="peliculaActual.precioBase" name="precioBase" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">URL POSTER (IMAGEN)</label>
+                  <input type="text" class="form-control bg-dark text-white border-secondary py-2" [(ngModel)]="peliculaActual.imagenUrl" name="imagenUrl" placeholder="https://...">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">URL TRAILER (YOUTUBE)</label>
+                  <input type="text" class="form-control bg-dark text-white border-secondary py-2" [(ngModel)]="peliculaActual.trailerUrl" name="trailerUrl" placeholder="https://youtube.com/...">
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label text-muted small fw-bold">DESCRIPCIÓN / SINOPSIS</label>
+                  <textarea class="form-control bg-dark text-white border-secondary" [(ngModel)]="peliculaActual.descripcion" name="descripcion" rows="3" placeholder="Resumen de la película..." required></textarea>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">UBICACIÓN EN CARTELERA</label>
+                  <select class="form-select bg-dark text-white border-secondary py-2" [(ngModel)]="peliculaActual.estadoCartelera" name="estadoCartelera">
+                    <option value="ESTRENO">Estreno</option>
+                    <option value="CARTELERA">Cartelera Normal</option>
+                    <option value="PROXIMAMENTE">Próximamente (No permite compra)</option>
+                    <option value="ARCHIVADA">Archivada / Oculta</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">ESTADO OPERATIVO</label>
+                  <select class="form-select bg-dark text-white border-secondary py-2" [(ngModel)]="peliculaActual.estado" name="estado">
+                    <option value="ACTIVA">Activa</option>
+                    <option value="INACTIVA">Inactiva (Mantenimiento)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer border-0 px-0 pb-0 mt-4 gap-2">
+                <button type="button" class="btn btn-outline-secondary px-4" (click)="cerrarPeliculaForm()">Cancelar</button>
+                <button type="submit" class="btn btn-primary-custom px-5 fw-bold" [disabled]="!form.valid">
+                  <i class="bi bi-save me-2"></i>{{ peliculaActual.id ? 'Actualizar' : 'Crear Película' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal Función -->
+  @if (showFuncionForm) {
+    <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.7); z-index: 1060;">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-secondary shadow-lg">
+          <div class="modal-header border-secondary bg-secondary bg-opacity-10">
+            <h5 class="modal-title fw-bold text-warning">
+              <i class="bi bi-calendar-event me-2"></i>{{ funcionActual.id ? 'Editar Función' : 'Nueva Función' }}
+            </h5>
+            <button type="button" class="btn-close btn-close-white" (click)="showFuncionForm = false"></button>
+          </div>
+          <div class="modal-body p-4">
+            <form (ngSubmit)="guardarFuncion()" #fForm="ngForm">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label text-muted small fw-bold">SELECCIONAR PELÍCULA</label>
+                  <select class="form-select bg-dark text-white border-secondary" [(ngModel)]="funcionActual.peliculaId" name="peliculaId" required>
+                    @for (p of peliculas; track p.id) {
+                      <option [value]="p.id">{{ p.titulo }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label text-muted small fw-bold">SELECCIONAR SALA</label>
+                  <select class="form-select bg-dark text-white border-secondary" [(ngModel)]="funcionActual.salaId" name="salaId" required>
+                    @for (s of salas; track s.id) {
+                      <option [value]="s.id">{{ s.nombre }} ({{ s.tipoSala }})</option>
+                    }
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">FECHA</label>
+                  <input type="date" class="form-control bg-dark text-white border-secondary" [(ngModel)]="funcionActual.fecha" name="fecha" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">HORA</label>
+                  <input type="time" class="form-control bg-dark text-white border-secondary" [(ngModel)]="funcionActual.hora" name="hora" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">PRECIO FINAL ($)</label>
+                  <input type="number" class="form-control bg-dark text-white border-secondary" [(ngModel)]="funcionActual.precioFinal" name="precioFinal" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">IDIOMA</label>
+                  <select class="form-select bg-dark text-white border-secondary" [(ngModel)]="funcionActual.idioma" name="idioma">
+                    <option value="Español">Español</option>
+                    <option value="Subtitulada">Subtitulada</option>
+                    <option value="Inglés">Inglés</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer border-0 px-0 pb-0 mt-4 gap-2">
+                <button type="button" class="btn btn-outline-secondary px-4" (click)="showFuncionForm = false">Cancelar</button>
+                <button type="submit" class="btn btn-warning px-5 fw-bold text-dark" [disabled]="!fForm.valid">
+                  <i class="bi bi-save me-2"></i>Guardar Función
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal Ver Asientos -->
+  @if (verAsientosFuncion) {
+    <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.85); z-index: 1060;">
+      <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-secondary shadow-lg">
+          <div class="modal-header border-secondary bg-secondary bg-opacity-10">
+            <h5 class="modal-title fw-bold text-info">
+              <i class="bi bi-grid-3x3 me-2"></i>Monitor de Asientos: {{ verAsientosFuncion.pelicula.titulo }}
+            </h5>
+            <button type="button" class="btn-close btn-close-white" (click)="verAsientosFuncion = null"></button>
+          </div>
+          <div class="modal-body p-4">
+            <div class="row g-4">
+              <div class="col-lg-6 text-center border-end border-secondary">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <h6 class="text-uppercase small fw-bold text-muted mb-0">Mapa Interactivo de Sala</h6>
+                  <span class="badge bg-secondary bg-opacity-25 px-3 py-2">Sala: {{ verAsientosFuncion.sala.nombre }}</span>
+                </div>
+                <div class="p-4 mb-3" style="background: #000; border-radius: 20px; border: 1px solid #333;">
+                  <div class="mb-5 mx-auto" style="width: 80%; height: 8px; background: #555; border-radius: 10px; box-shadow: 0 5px 15px rgba(255,255,255,0.1);"></div>
+                  
+                  @for (fObj of filasAsientosDeFuncion; track fObj.fila) {
+                    <div class="d-flex gap-2 mb-2 justify-content-center">
+                      <div class="small text-muted fw-bold" style="width: 20px;">{{ fObj.fila }}</div>
+                      @for (a of fObj.asientos; track a.id) {
+                        <div [style.background-color]="a.disponible ? '#333' : (a.estadoReserva === 'PAGADA' ? '#198754' : '#facc15')"
+                             class="seat-admin shadow-sm"
+                             style="width: 28px; height: 28px; border-radius: 6px; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s;"
+                             [title]="a.disponible ? 'Disponible' : 'Ocupado por: ' + a.usuarioReserva?.nombre">
+                          <span [class.text-dark]="!a.disponible && a.estadoReserva === 'RESERVADA'" class="fw-bold">{{ a.numero }}</span>
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+                <div class="d-flex gap-4 justify-content-center small fw-bold text-uppercase">
+                  <div class="d-flex align-items-center"><div style="width: 14px; height: 14px; background: #333; margin-right: 8px; border-radius: 3px;"></div> Libre</div>
+                  <div class="d-flex align-items-center"><div style="width: 14px; height: 14px; background: #facc15; margin-right: 8px; border-radius: 3px;"></div> Reservado</div>
+                  <div class="d-flex align-items-center"><div style="width: 14px; height: 14px; background: #198754; margin-right: 8px; border-radius: 3px;"></div> Pagado</div>
+                </div>
+              </div>
+              
+              <div class="col-lg-6">
+                <h6 class="text-uppercase small fw-bold text-muted mb-4">Detalle de Reservas Activas</h6>
+                <div class="table-responsive" style="max-height: 450px;">
+                  <table class="table table-dark table-hover table-sm align-middle">
+                    <thead class="bg-secondary bg-opacity-10">
+                      <tr>
+                        <th class="py-3 px-3">Asiento</th>
+                        <th class="py-3">Usuario / Cliente</th>
+                        <th class="py-3">Estado</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (a of asientosDeFuncion; track a.id) {
+                        @if (!a.disponible && a.usuarioReserva) {
+                          <tr class="border-secondary border-opacity-25">
+                            <td class="py-3 px-3"><span class="badge bg-info text-dark fw-bold">{{ a.fila }}{{ a.numero }}</span></td>
+                            <td class="py-3">
+                              <div class="fw-bold">{{ a.usuarioReserva.nombre }}</div>
+                              <div class="x-small text-muted">{{ a.usuarioReserva.email }}</div>
+                            </td>
+                            <td class="py-3">
+                              <span class="badge px-3 py-2" 
+                                    [class.bg-success]="a.estadoReserva === 'PAGADA'" 
+                                    [class.bg-warning]="a.estadoReserva === 'RESERVADA'"
+                                    [class.text-dark]="a.estadoReserva === 'RESERVADA'">
+                                {{ a.estadoReserva }}
+                              </span>
+                            </td>
+                          </tr>
+                        }
+                      } @empty {
+                        <tr>
+                          <td colspan="3" class="text-center text-muted py-5">
+                            <i class="bi bi-inbox fs-1 d-block mb-3 opacity-25"></i>
+                            No hay asientos ocupados en esta función
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal Sala -->
+  @if (showSalaForm) {
+    <div class="modal fade show" tabindex="-1" style="display: block; background: rgba(0,0,0,0.7); z-index: 1060;">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-secondary shadow-lg">
+          <div class="modal-header border-secondary bg-secondary bg-opacity-10">
+            <h5 class="modal-title fw-bold text-info">
+              <i class="bi bi-door-open me-2"></i>{{ salaActual.id ? 'Editar Sala' : 'Nueva Sala' }}
+            </h5>
+            <button type="button" class="btn-close btn-close-white" (click)="showSalaForm = false"></button>
+          </div>
+          <div class="modal-body p-4">
+            <form (ngSubmit)="guardarSala()" #sForm="ngForm">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label text-muted small fw-bold">NOMBRE DE LA SALA</label>
+                  <input type="text" class="form-control bg-dark text-white border-secondary py-2" [(ngModel)]="salaActual.nombre" name="nombre" placeholder="Ej: Sala 01 VIP" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">CAPACIDAD TOTAL</label>
+                  <input type="number" class="form-control bg-dark text-white border-secondary py-2" [(ngModel)]="salaActual.capacidad" name="capacidad" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small fw-bold">TIPO DE SALA</label>
+                  <select class="form-select bg-dark text-white border-secondary py-2" [(ngModel)]="salaActual.tipoSala" name="tipoSala">
+                    <option value="NORMAL">Normal / Estándar</option>
+                    <option value="VIP">VIP Premium</option>
+                    <option value="IMAX">IMAX Experience</option>
+                    <option value="3D">3D Real D</option>
+                  </select>
+                </div>
+              </div>
+              <div class="modal-footer border-0 px-0 pb-0 mt-4 gap-2">
+                <button type="button" class="btn btn-outline-secondary px-4" (click)="showSalaForm = false">Cancelar</button>
+                <button type="submit" class="btn btn-info px-5 fw-bold text-dark" [disabled]="!sForm.valid">
+                  <i class="bi bi-save me-2"></i>Guardar Sala
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+</div> <!-- Fin Layout Dashboard -->

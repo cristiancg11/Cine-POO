@@ -1,0 +1,215 @@
+<div class="container py-5 min-vh-100">
+  <!-- Loading State -->
+  @if (isLoading) {
+    <div class="d-flex justify-content-center align-items-center" style="height: 50vh;">
+      <div class="spinner-border text-primary-custom" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  } @else {
+    <div class="row g-4">
+      <!-- Resumen Película Izquierda -->
+      <div class="col-lg-4">
+        <div class="card bg-dark text-white border-0 shadow sticky-top" style="top: 20px;">
+          @if (pelicula) {
+            <img [src]="pelicula.imagenUrl || pelicula.imagen" class="card-img-top" [alt]="pelicula.titulo">
+            <div class="card-body">
+              <h4 class="card-title">{{ pelicula.titulo }}</h4>
+              <p class="text-muted small mb-2"><i class="bi bi-clock"></i> {{ pelicula.duracion }} min | {{ pelicula.clasificacion }}</p>
+              
+              <hr class="border-secondary">
+              
+              @if (funcionSeleccionada) {
+                <div class="mb-3">
+                  <h6 class="text-primary-custom mb-1">Función Seleccionada:</h6>
+                  <p class="mb-0">{{ funcionSeleccionada.fecha }} a las {{ funcionSeleccionada.hora }}</p>
+                  <p class="small text-muted">{{ funcionSeleccionada.formato }} - {{ funcionSeleccionada.idioma }}</p>
+                </div>
+              }
+              
+              @if (asientosSeleccionados.length > 0) {
+                <div class="mb-3">
+                  <h6 class="text-primary-custom mb-1">Asientos ({{ asientosSeleccionados.length }}):</h6>
+                  <p class="mb-0">
+                    @for (asiento of asientosSeleccionados; track asiento.id) {
+                      <span class="badge bg-secondary me-1">{{ asiento.fila }}{{ asiento.numero }}</span>
+                    }
+                  </p>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                  <span class="h5 mb-0">Total:</span>
+                  <span class="h4 text-warning mb-0">${{ totalAPagar | number:'1.2-2' }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Contenido Wizard Derecha -->
+      <div class="col-lg-8">
+        <div class="card shadow border-0 bg-dark text-white p-4">
+          
+          <!-- Stepper -->
+          <div class="d-flex justify-content-between position-relative mb-5 step-indicator">
+            <div class="progress position-absolute w-100" style="height: 4px; top: 50%; transform: translateY(-50%); z-index: 1;">
+              <div class="progress-bar bg-primary-custom" role="progressbar" [style.width]="pasoActual === 1 ? '0%' : (pasoActual === 2 ? '50%' : '100%')"></div>
+            </div>
+            
+            <button class="btn rounded-circle position-relative z-index-2" 
+                    [ngClass]="pasoActual >= 1 ? 'btn-primary-custom' : 'btn-secondary'" 
+                    style="width: 40px; height: 40px; z-index: 2;" (click)="volverPaso(1)">1</button>
+            <button class="btn rounded-circle position-relative z-index-2" 
+                    [ngClass]="pasoActual >= 2 ? 'btn-primary-custom' : 'btn-secondary'" 
+                    style="width: 40px; height: 40px; z-index: 2;" (click)="pasoActual >= 2 ? volverPaso(2) : null">2</button>
+            <button class="btn rounded-circle position-relative z-index-2" 
+                    [ngClass]="pasoActual === 3 ? 'btn-primary-custom' : 'btn-secondary'" 
+                    style="width: 40px; height: 40px; z-index: 2;">3</button>
+          </div>
+
+          <!-- PASO 1: Funciones -->
+          @if (pasoActual === 1) {
+            <div>
+              <h3 class="mb-4">Selecciona una Función</h3>
+              
+              @if (pelicula?.estadoCartelera === 'PROXIMAMENTE') {
+                <div class="alert alert-warning py-5 text-center">
+                  <i class="bi bi-clock-history fs-1 d-block mb-3"></i>
+                  <h4 class="alert-heading fw-bold">PRÓXIMAMENTE</h4>
+                  <p class="mb-0 fs-5">Esta película aún no está disponible para compra. <br> ¡Muy pronto en CineMaster!</p>
+                  <button class="btn btn-warning mt-4 px-4 fw-bold text-dark" (click)="volverCartelera()">Volver a Cartelera</button>
+                </div>
+              } @else if (funciones.length === 0) {
+                <div class="alert alert-info py-4 text-center">
+                  <i class="bi bi-info-circle fs-1 d-block mb-3"></i>
+                  <p class="mb-0">Lo sentimos, esta película aún no tiene funciones creadas en el sistema.</p>
+                  <p class="small text-muted mt-2">Como administrador, puedes crear una función para esta película desde el Panel de Admin.</p>
+                  <button class="btn btn-outline-light mt-3" (click)="volverCartelera()">Volver a Cartelera</button>
+                </div>
+              } @else {
+                <div class="row g-3">
+                  @for (funcion of funciones; track funcion.id) {
+                    <div class="col-md-6">
+                      <div class="card h-100 border-secondary bg-transparent function-card" 
+                           [class.border-primary]="funcionSeleccionada?.id === funcion.id"
+                           style="cursor: pointer; transition: 0.3s;"
+                           (click)="seleccionarFuncion(funcion)">
+                        <div class="card-body">
+                          <h5 class="card-title text-info"><i class="bi bi-calendar-event"></i> {{ funcion.fecha }}</h5>
+                          <h3 class="mb-2"><i class="bi bi-clock"></i> {{ funcion.hora }}</h3>
+                          <div class="d-flex justify-content-between mt-3">
+                            <span class="badge bg-secondary">{{ funcion.formato }}</span>
+                            <span class="badge bg-secondary">{{ funcion.idioma }}</span>
+                            <span class="text-warning fw-bold">${{ funcion.precioFinal }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+
+          <!-- PASO 2: Asientos -->
+          @if (pasoActual === 2) {
+            <div>
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">Selecciona tus Asientos</h3>
+                <button class="btn btn-outline-light btn-sm" (click)="volverPaso(1)"><i class="bi bi-arrow-left"></i> Cambiar Función</button>
+              </div>
+              
+              <div class="screen-indicator text-center p-2 mb-5 bg-secondary text-white rounded">
+                P A N T A L L A
+              </div>
+
+              <div class="seat-map-container text-center mb-4 overflow-auto">
+                <div class="d-inline-block p-4" style="background: rgba(0,0,0,0.3); border-radius: 20px;">
+                  @for (filaObj of filasAsientos; track filaObj.fila) {
+                    <div class="d-flex align-items-center mb-2 justify-content-center">
+                      <div class="me-3 fw-bold text-muted" style="width: 20px;">{{ filaObj.fila }}</div>
+                      <div class="d-flex gap-2">
+                        @for (asiento of filaObj.asientos; track asiento.id) {
+                          <div class="seat text-center" 
+                               [class.seat-available]="asiento.disponible"
+                               [class.seat-occupied]="!asiento.disponible"
+                               [class.seat-selected]="isAsientoSeleccionado(asiento)"
+                               [class.seat-vip]="asiento.tipo === 'VIP'"
+                               (click)="toggleAsiento(asiento)"
+                               title="{{ asiento.fila }}{{ asiento.numero }} - {{ asiento.tipo }}"
+                               style="width: 35px; height: 35px; border-radius: 6px 6px 0 0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; transition: 0.2s;">
+                            {{ asiento.numero }}
+                          </div>
+                        }
+                      </div>
+                      <div class="ms-3 fw-bold text-muted" style="width: 20px;">{{ filaObj.fila }}</div>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-center flex-wrap gap-4 mb-5 text-muted small">
+                <div class="d-flex align-items-center gap-2"><div class="seat-legend" style="background-color: #495057;"></div> Normal</div>
+                <div class="d-flex align-items-center gap-2"><div class="seat-legend" style="background-color: #fbbf24;"></div> VIP</div>
+                <div class="d-flex align-items-center gap-2"><div class="seat-legend" style="background-color: #dc3545;"></div> Ocupado</div>
+                <div class="d-flex align-items-center gap-2"><div class="seat-legend" style="background-color: #0d6efd;"></div> Seleccionado</div>
+              </div>
+
+              <div class="text-end">
+                <button class="btn btn-primary-custom px-5 py-2" [disabled]="asientosSeleccionados.length === 0" (click)="irPaso3()">
+                  Continuar ({{ asientosSeleccionados.length }}) <i class="bi bi-arrow-right"></i>
+                </button>
+              </div>
+            </div>
+          }
+
+          <!-- PASO 3: Confirmación -->
+          @if (pasoActual === 3) {
+            <div class="text-center py-4">
+              <i class="bi bi-check-circle-fill text-success" style="font-size: 4rem;"></i>
+              <h2 class="mt-3 mb-4">Confirmar Reserva</h2>
+              
+              <div class="alert alert-info text-start mb-4">
+                <h5 class="alert-heading"><i class="bi bi-info-circle"></i> Importante</h5>
+                <p class="mb-0">Estás a punto de confirmar tu compra por <strong>{{ asientosSeleccionados.length }} boleto(s)</strong> para la película <strong>{{ pelicula?.titulo }}</strong>.</p>
+              </div>
+              
+              <div class="card bg-dark border-secondary mb-4 text-start">
+                <div class="card-body">
+                  <h5 class="text-primary-custom">Detalle del Pago</h5>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal Boletos ({{ asientosSeleccionados.length }}x):</span>
+                    <span>${{ totalAPagar | number:'1.2-2' }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Cargos por servicio:</span>
+                    <span>$0.00</span>
+                  </div>
+                  <hr class="border-secondary">
+                  <div class="d-flex justify-content-between fs-4 text-warning">
+                    <span>Total:</span>
+                    <span class="fw-bold">${{ totalAPagar | number:'1.2-2' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <button class="btn btn-outline-light px-4" [disabled]="isProcessing" (click)="volverPaso(2)">Volver</button>
+                <button class="btn btn-success px-5 fw-bold" [disabled]="isProcessing" (click)="confirmarReserva()">
+                  @if (isProcessing) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Procesando...
+                  } @else {
+                    Pagar y Reservar <i class="bi bi-credit-card ms-2"></i>
+                  }
+                </button>
+              </div>
+            </div>
+          }
+
+        </div>
+      </div>
+    </div>
+  }
+</div>
+

@@ -1,0 +1,168 @@
+<section class="container mt-5 mb-5" style="min-height: calc(100vh - 200px); padding-top: 40px;">
+  <div class="card bg-dark text-white border-secondary h-100 shadow-lg rounded-4 overflow-hidden">
+      <div class="card-header border-secondary align-items-center p-4" style="background: linear-gradient(90deg, #1a1a1a 0%, #0a0a0a 100%);">
+          <h3 class="m-0"><i class="bi bi-person-circle me-3 text-primary-custom"></i>Mi Perfil</h3>
+      </div>
+      <div class="card-body p-0">
+          <div class="row g-0 h-100" style="min-height: 60vh;">
+              <!-- Sidebar / Tabs -->
+              <div class="col-md-3 border-end border-secondary" style="background-color: #111;">
+                  <div class="nav flex-column nav-pills p-4 gap-2 h-100" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                      <button class="nav-link active text-start text-white p-3 rounded-3" id="v-pills-stats-tab" data-bs-toggle="pill" data-bs-target="#v-pills-stats" type="button" role="tab"><i class="bi bi-graph-up me-3 fs-5"></i>Estadísticas</button>
+                      @if (!isAdmin) {
+                        <button class="nav-link text-start text-white p-3 rounded-3" id="v-pills-activas-tab" data-bs-toggle="pill" data-bs-target="#v-pills-activas" type="button" role="tab"><i class="bi bi-ticket-detailed me-3 fs-5"></i>Reservas Activas</button>
+                        <button class="nav-link text-start text-white p-3 rounded-3" id="v-pills-historial-tab" data-bs-toggle="pill" data-bs-target="#v-pills-historial" type="button" role="tab"><i class="bi bi-clock-history me-3 fs-5"></i>Historial de Compras</button>
+                      }
+                      <button class="nav-link text-start text-white p-3 rounded-3" id="v-pills-info-tab" data-bs-toggle="pill" data-bs-target="#v-pills-info" type="button" role="tab"><i class="bi bi-gear me-3 fs-5"></i>Configuración</button>
+                  </div>
+              </div>
+              
+              <!-- Content -->
+              <div class="col-md-9 p-4 p-md-5 bg-dark">
+                  <div class="tab-content h-100" id="v-pills-tabContent">
+                      <!-- Stats -->
+                      <div class="tab-pane fade show active h-100" id="v-pills-stats" role="tabpanel">
+                          <h4 class="mb-4 text-warning">Resumen de Cuenta</h4>
+                          
+                          @if (isAdmin) {
+                            <div class="row g-4 mt-2">
+                                <div class="col-sm-4">
+                                    <div class="card bg-success bg-opacity-25 border-0 text-center p-4 rounded-4 h-100">
+                                        <i class="bi bi-cash-coin fs-1 text-success mb-3"></i>
+                                        <h2 class="display-6 fw-bold text-white">${{ adminStats.gananciasTotales | number:'1.2-2' }}</h2>
+                                        <span class="text-muted small text-uppercase fw-bold">Ganancias Totales</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="card bg-primary bg-opacity-25 border-0 text-center p-4 rounded-4 h-100">
+                                        <i class="bi bi-people fs-1 text-primary mb-3"></i>
+                                        <h2 class="display-6 fw-bold text-white">{{ adminStats.usuariosActivos }}</h2>
+                                        <span class="text-muted small text-uppercase fw-bold">Usuarios Activos</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="card bg-warning bg-opacity-25 border-0 text-center p-4 rounded-4 h-100">
+                                        <i class="bi bi-ticket-detailed fs-1 text-warning mb-3"></i>
+                                        <h2 class="display-6 fw-bold text-white">{{ adminStats.reservasTotales }}</h2>
+                                        <span class="text-muted small text-uppercase fw-bold">Reservas Realizadas</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card bg-info bg-opacity-25 border-0 text-center p-4 rounded-4 h-100">
+                                        <i class="bi bi-grid-3x3 fs-1 text-info mb-3"></i>
+                                        <h2 class="display-6 fw-bold text-white">{{ adminStats.asientosOcupados }}</h2>
+                                        <span class="text-muted small text-uppercase fw-bold">Asientos Ocupados</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card bg-secondary bg-opacity-25 border-0 text-center p-4 rounded-4 h-100">
+                                        <i class="bi bi-check-circle fs-1 text-muted mb-3"></i>
+                                        <h2 class="display-6 fw-bold text-white">{{ adminStats.asientosDisponibles }}</h2>
+                                        <span class="text-muted small text-uppercase fw-bold">Asientos Disponibles</span>
+                                    </div>
+                                </div>
+                            </div>
+                          } @else {
+                            <div class="row g-4 mt-2">
+                                <div class="col-sm-6">
+                                    <div class="card bg-secondary bg-opacity-25 border-0 text-center p-5 rounded-4 h-100">
+                                        <i class="bi bi-ticket-perforated fs-1 text-primary-custom mb-3"></i>
+                                        <h2 class="display-4 fw-bold text-white">{{ statBoletos }}</h2>
+                                        <span class="text-muted fs-5">Reservas Activas</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card bg-secondary bg-opacity-25 border-0 text-center p-5 rounded-4 h-100">
+                                        <i class="bi bi-cash-coin fs-1 text-success mb-3"></i>
+                                        <h2 class="display-4 fw-bold text-white">${{ statGastado | number:'1.2-2' }}</h2>
+                                        <span class="text-muted fs-5">Dinero Gastado Total</span>
+                                    </div>
+                                </div>
+                            </div>
+                          }
+                      </div>
+                      
+                      <!-- Activas -->
+                      @if (!isAdmin) {
+                        <div class="tab-pane fade h-100" id="v-pills-activas" role="tabpanel">
+                            <h4 class="mb-4 text-primary-custom">Próximas Funciones</h4>
+                            
+                            @if (isLoading) {
+                                <div class="text-center text-muted my-5"><div class="spinner-border" role="status"></div></div>
+                            } @else {
+                                @for (r of reservasActivas; track r.id) {
+                                    <div class="card bg-secondary bg-opacity-25 border-0 mb-3 p-3 shadow-sm" style="transition: transform 0.2s;">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5 class="text-white mb-1 fw-bold">{{ r.funcion.pelicula.titulo }}</h5>
+                                                <p class="mb-1 small text-muted"><i class="bi bi-calendar"></i> {{ r.funcion.fecha }} | <i class="bi bi-clock"></i> {{ r.funcion.hora }} | {{ r.funcion.sala.nombre }}</p>
+                                                <p class="mb-0 text-success fw-bold">Total: ${{ r.total | number:'1.2-2' }}</p>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-success mb-2 d-block">{{ r.estado }}</span>
+                                                <button class="btn btn-sm btn-outline-danger" (click)="cancelarReserva(r.id)">Cancelar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                } @empty {
+                                    <p class="text-muted">No tienes reservas activas en este momento.</p>
+                                }
+                            }
+                        </div>
+
+                        <!-- Historial -->
+                        <div class="tab-pane fade h-100" id="v-pills-historial" role="tabpanel">
+                            <h4 class="mb-4 text-info">Historial Completo</h4>
+                            @if (isLoading) {
+                                <div class="text-center text-muted my-5"><div class="spinner-border" role="status"></div></div>
+                            } @else {
+                                @for (r of reservasHistorial; track r.id) {
+                                    <div class="card bg-secondary bg-opacity-25 border-0 mb-3 p-3 shadow-sm" style="transition: transform 0.2s;">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5 class="text-white mb-1 fw-bold">{{ r.funcion.pelicula.titulo }}</h5>
+                                                <p class="mb-1 small text-muted"><i class="bi bi-calendar"></i> {{ r.funcion.fecha }} | <i class="bi bi-clock"></i> {{ r.funcion.hora }} | {{ r.funcion.sala.nombre }}</p>
+                                                <p class="mb-0 text-success fw-bold">Total: ${{ r.total | number:'1.2-2' }}</p>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-danger mb-2 d-block">{{ r.estado }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                } @empty {
+                                    <p class="text-muted">No hay historial disponible.</p>
+                                }
+                            }
+                        </div>
+                      }
+
+                      <!-- Info / Config -->
+                      <div class="tab-pane fade h-100" id="v-pills-info" role="tabpanel">
+                          <h4 class="mb-4">Información Personal</h4>
+                          <div class="card bg-secondary bg-opacity-10 border-0 p-4 rounded-4">
+                              <form (ngSubmit)="actualizarPerfil()" #perfilForm="ngForm">
+                                  <div class="mb-4">
+                                      <label class="form-label text-muted">Nombre Completo</label>
+                                      <input type="text" class="form-control form-control-lg bg-dark text-white border-secondary" name="nombre" [(ngModel)]="usuario.nombre" required>
+                                  </div>
+                                  <div class="mb-4">
+                                      <label class="form-label text-muted">Correo Electrónico</label>
+                                      <input type="email" class="form-control form-control-lg bg-dark text-white border-secondary" name="email" [(ngModel)]="usuario.email" readonly disabled>
+                                      <small class="text-muted mt-2 d-block"><i class="bi bi-info-circle me-1"></i> El correo no puede ser modificado por seguridad.</small>
+                                  </div>
+                                  <hr class="border-secondary my-5">
+                                  <h5 class="mb-4 text-warning">Seguridad</h5>
+                                  <div class="mb-4">
+                                      <label class="form-label text-muted">Nueva Contraseña (Opcional)</label>
+                                      <input type="password" class="form-control form-control-lg bg-dark text-white border-secondary" name="password" [(ngModel)]="passwordUpdate" placeholder="Dejar en blanco para mantener la actual">
+                                  </div>
+                                  <button type="submit" class="btn btn-primary-custom btn-lg w-100 mt-2" [disabled]="!perfilForm.form.valid"><i class="bi bi-save me-2"></i>Guardar Cambios</button>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</section>

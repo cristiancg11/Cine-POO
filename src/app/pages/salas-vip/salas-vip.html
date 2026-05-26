@@ -1,0 +1,33 @@
+<section class="movie-section min-vh-100">
+  <h2 class="mb-4 text-warning"><i class="bi bi-star-fill me-2"></i>Nuestras Salas VIP</h2>
+  
+  @if (isLoading) {
+      <div class="text-center mt-5">
+          <div class="spinner-border text-warning" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Cargando salas VIP...</span>
+          </div>
+      </div>
+  } @else {
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-2">
+          @for (s of salasVip; track s.id) {
+              <div class="col">
+                  <div class="card h-100 shadow-sm border-0 bg-dark text-white p-3">
+                      <div class="card-body text-center">
+                          <i class="bi bi-star text-warning display-1 mb-3"></i>
+                          <h4 class="card-title text-warning fw-bold">{{ s.nombre }}</h4>
+                          <hr class="border-secondary">
+                          <p class="card-text fs-5">
+                            <i class="bi bi-people-fill me-2"></i>Capacidad: {{ s.capacidad }} asientos
+                          </p>
+                          <p class="text-muted mt-3">Disfruta de la máxima comodidad, menú exclusivo y atención personalizada.</p>
+                      </div>
+                  </div>
+              </div>
+          } @empty {
+              <div class="col-12">
+                  <p class="text-muted">No hay salas VIP disponibles en este momento.</p>
+              </div>
+          }
+      </div>
+  }
+</section>

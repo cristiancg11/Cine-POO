@@ -1,0 +1,42 @@
+<section id="estrenos" class="movie-section min-vh-100">
+  <h2 class="mb-4 text-warning">Estrenos de la Semana</h2>
+  
+  @if (isLoading) {
+      <div class="text-center mt-5">
+          <div class="spinner-border text-primary-custom" role="status" style="width: 3rem; height: 3rem;">
+              <span class="visually-hidden">Cargando estrenos...</span>
+          </div>
+      </div>
+  } @else {
+      <div class="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4 mt-2">
+          @for (p of peliculas; track p.id) {
+              <div class="col" style="cursor:pointer;">
+                  <div class="card movie-card h-100 shadow-sm border-0">
+                      <div class="movie-poster-wrapper" style="overflow: hidden;">
+                          <img [src]="p.imagenUrl || p.imagen" class="movie-poster" [alt]="p.titulo">
+                          <div class="movie-overlay d-flex flex-column align-items-center justify-content-center bg-black bg-opacity-50">
+                              <button class="btn btn-outline-light rounded-circle p-3 mb-2"><i class="bi bi-info-circle fs-4"></i></button>
+                              <button (click)="comprarBoleto(p); $event.stopPropagation()" class="btn btn-primary-custom btn-sm fw-bold px-3">Comprar Boleto</button>
+                          </div>
+                      </div>
+                      <div class="movie-info text-white">
+                          <h5 class="movie-title text-truncate">{{ p.titulo }}</h5>
+                          <div class="movie-meta mb-2">
+                              <span class="movie-badge badge-nuevo">ESTRENO</span>
+                              <span class="movie-badge bg-secondary text-light border-0">{{ p.clasificacion }}</span>
+                          </div>
+                          <p class="small text-muted mb-0 d-flex justify-content-between">
+                              <span><i class="bi bi-film"></i> {{ p.genero }}</span>
+                              <span><i class="bi bi-clock"></i> {{ p.duracion }}m</span>
+                          </p>
+                      </div>
+                  </div>
+              </div>
+          } @empty {
+              <div class="col-12">
+                  <p class="text-muted">No hay estrenos esta semana.</p>
+              </div>
+          }
+      </div>
+  }
+</section>

@@ -1,0 +1,70 @@
+<div class="container py-5 mt-5 min-vh-100">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-white"><i class="bi bi-ticket-detailed text-warning"></i> Mis Reservas</h2>
+    <button (click)="cargarReservas()" class="btn btn-outline-custom btn-sm">
+      <i class="bi bi-arrow-clockwise"></i> Actualizar
+    </button>
+  </div>
+
+  @if (isLoading) {
+    <div class="text-center py-5">
+      <div class="spinner-border text-warning" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  } @else {
+    @if (reservas.length === 0) {
+      <div class="card bg-dark border-secondary text-center p-5">
+        <div class="card-body">
+          <i class="bi bi-ticket-perforated text-muted mb-3" style="font-size: 3rem;"></i>
+          <h4 class="text-white">Aún no tienes reservas</h4>
+          <p class="text-muted">¡Explora nuestra cartelera y reserva tu primer boleto!</p>
+          <a routerLink="/cartelera" class="btn btn-primary-custom mt-3">Ver Cartelera</a>
+        </div>
+      </div>
+    } @else {
+      <div class="row g-4">
+        @for (reserva of reservas; track reserva.id) {
+          <div class="col-md-6 col-lg-4">
+            <div class="card h-100 bg-dark border-secondary text-white shadow-sm hover-reserva">
+              <div class="card-body">
+                <div class="d-flex justify-content-between mb-3">
+                  <span class="badge" [ngClass]="{
+                    'bg-success': reserva.estado === 'PAGADO',
+                    'bg-warning text-dark': reserva.estado === 'RESERVADO',
+                    'bg-danger': reserva.estado === 'CANCELADO'
+                  }">{{ reserva.estado }}</span>
+                  <small class="text-muted">#{{ reserva.id }}</small>
+                </div>
+                
+                <h5 class="card-title text-info mb-1">{{ reserva.funcion.pelicula.titulo }}</h5>
+                <p class="small text-muted mb-3">
+                  <i class="bi bi-calendar-event"></i> {{ reserva.funcion.fecha }} | 
+                  <i class="bi bi-clock"></i> {{ reserva.funcion.hora }}
+                </p>
+
+                <div class="bg-secondary bg-opacity-10 p-2 rounded mb-3">
+                  <p class="small mb-1 fw-bold text-warning">Asientos:</p>
+                  <div class="d-flex flex-wrap gap-1">
+                    @for (asiento of reserva.asientos; track asiento.id) {
+                      <span class="badge bg-secondary">{{ asiento.fila }}{{ asiento.numero }}</span>
+                    }
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="h5 mb-0 text-success">${{ reserva.total | number:'1.2-2' }}</span>
+                  @if (reserva.estado !== 'CANCELADO') {
+                    <button (click)="cancelarReserva(reserva.id)" class="btn btn-sm btn-outline-danger border-0">
+                      <i class="bi bi-x-circle"></i> Cancelar
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
