@@ -16,7 +16,10 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/angular-cine",
+            "outputPath": {
+              "base": "dist/angular-cine",
+              "browser": ""
+            },
             "index": "src/index.html",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
