@@ -16,11 +16,15 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/angular-cine",
+            "index": "src/index.html",
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
             "polyfills": [
               "zone.js"
             ],
+            "ssr": false,
+            "prerender": false,
             "assets": [
               {
                 "glob": "**/*",
