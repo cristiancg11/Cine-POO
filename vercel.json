@@ -1,5 +1,6 @@
-{
-  "cleanUrls": true,
+﻿{
+  "buildCommand": "ng build --configuration production",
+  "outputDirectory": "dist/angular-cine",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
